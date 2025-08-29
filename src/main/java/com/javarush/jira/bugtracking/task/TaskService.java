@@ -7,6 +7,7 @@ import com.javarush.jira.bugtracking.sprint.Sprint;
 import com.javarush.jira.bugtracking.sprint.SprintRepository;
 import com.javarush.jira.bugtracking.task.mapper.TaskExtMapper;
 import com.javarush.jira.bugtracking.task.mapper.TaskFullMapper;
+import com.javarush.jira.bugtracking.task.to.ActivityTo;
 import com.javarush.jira.bugtracking.task.to.TaskToExt;
 import com.javarush.jira.bugtracking.task.to.TaskToFull;
 import com.javarush.jira.common.error.DataConflictException;
@@ -18,13 +19,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.javarush.jira.bugtracking.ObjectType.TASK;
 import static com.javarush.jira.bugtracking.task.TaskUtil.fillExtraFields;
@@ -96,8 +95,8 @@ public class TaskService {
         List<Activity> activities = activityHandler.getRepository().findAllByTaskIdOrderByUpdatedDesc(id);
         fillExtraFields(taskToFull, activities);
         taskToFull.setActivityTos(activityHandler.getMapper().toToList(activities));
-        taskToFull.setDevelopmentTime(getTaskDevelopmentTime(id));
-        taskToFull.setTestingTime(getTaskTestingTime(id));
+        taskToFull.setDevelopmentTime(calculateTimeSpentInStatus(taskToFull, "in_progress"));
+        taskToFull.setTestingTime(calculateTimeSpentInStatus(taskToFull, "test"));
         return taskToFull;
     }
 
@@ -178,54 +177,47 @@ public class TaskService {
             task.setTags(tags);
         }
     }
+    public long calculateTimeSpentInStatus(TaskToFull taskToFull, String targetStatus) {
+        List<ActivityTo> activities = taskToFull.getActivityTos().stream()
+                .sorted((o1, o2) -> {
+                    if (o1.getUpdated() == null || o2.getUpdated() == null) {
+                        return 0;
+                    }
+                    return o1.getUpdated().compareTo(o2.getUpdated());
+                })
+                .toList();
 
-    public Long getTaskDevelopmentTime(long taskId) { // Sum of (ready_for_review - in_progress)
-        List<Activity> activities = activityHandler.getRepository().findAllByTaskIdOrderByUpdatedDesc(taskId);
-        Collections.reverse(activities); // ASC
+        if (CollectionUtils.isEmpty(activities)) {
+            return 0;
+        }
 
-        long totalDevelopmentTime = 0;
-        LocalDateTime inProgressStart = null;
+        long result = 0;
+        for (int i = 0; i < activities.size(); i++) {
+            ActivityTo activityStart = activities.get(i);
+            boolean activityStartHasEnd = false;
+            if (!Objects.equals(activityStart.getStatusCode(), targetStatus) || activityStart.getUpdated() == null) {
+                continue;
+            }
 
-        for (Activity activity : activities) {
-            String status = activity.getStatusCode();
-            if (status == null) continue;
-
-            if (status.equals("in_progress")) {
-                if (inProgressStart == null) {
-                    inProgressStart = activity.getUpdated();
-                }
-            } else if (status.equals("ready_for_review")) {
-                if (inProgressStart != null) {
-                    totalDevelopmentTime += ChronoUnit.SECONDS.between(inProgressStart, activity.getUpdated());
-                    inProgressStart = null; // Interval closed
+            ActivityTo activityEnd = null;
+            for (int j = i + 1; j < activities.size(); j++) {
+                activityEnd = activities.get(j);
+                if (!Objects.equals(activityEnd.getStatusCode(), targetStatus) && activityEnd.getUpdated() != null) {
+                    activityStartHasEnd = true;
+                    i = j;
+                    break;
                 }
             }
-        }
-        return totalDevelopmentTime > 0 ? totalDevelopmentTime : null;
-    }
 
-    public Long getTaskTestingTime(long taskId) { // Sum of (done - ready_for_review)
-        List<Activity> activities = activityHandler.getRepository().findAllByTaskIdOrderByUpdatedDesc(taskId);
-        Collections.reverse(activities); // ASC
-
-        long totalTestingTime = 0;
-        LocalDateTime readyForReviewStart = null;
-
-        for (Activity activity : activities) {
-            String status = activity.getStatusCode();
-            if (status == null) continue;
-
-            if (status.equals("ready_for_review")) {
-                if (readyForReviewStart == null) {
-                    readyForReviewStart = activity.getUpdated();
-                }
-            } else if (status.equals("done")) {
-                if (readyForReviewStart != null) {
-                    totalTestingTime += ChronoUnit.SECONDS.between(readyForReviewStart, activity.getUpdated());
-                    readyForReviewStart = null; // Interval closed
-                }
+            LocalDateTime start = activityStart.getUpdated();
+            if (activityStartHasEnd) {
+                LocalDateTime end = activityEnd.getUpdated();
+                result += (start.until(end, ChronoUnit.SECONDS));
+            } else {
+                result += (start.until(LocalDateTime.now(), ChronoUnit.SECONDS));
             }
         }
-        return totalTestingTime > 0 ? totalTestingTime : null;
+
+        return result;
     }
 }

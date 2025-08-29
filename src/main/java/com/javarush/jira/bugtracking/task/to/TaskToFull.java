@@ -15,9 +15,9 @@ public class TaskToFull extends TaskToExt {
     @Setter
     List<ActivityTo> activityTos;
     @Setter
-    Long developmentTime;
+    long developmentTime = 0;
     @Setter
-    Long testingTime;
+    long testingTime = 0;
 
     public TaskToFull(Long id,
                       String code,
