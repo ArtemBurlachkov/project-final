@@ -88,20 +88,33 @@ spring:
     init:
       mode: always
 
+#  mail:
+#    properties:
+#      mail:
+#        smtp:
+#          starttls:
+#            enable: true
+#          auth: true
+#    host: smtp.gmail.com
+#    username: ${mail.server.username}
+##    jira4jr@gmail.com
+#    password: ${mail.server.password}
+##    zdfzsrqvgimldzyj
+#    port: 587
+#  thymeleaf.check-template-location: false
   mail:
+    host: smtp.mail.ru
+    port: 465
+    username: ${mail.server.username}
+    password: ${mail.server.password}
     properties:
       mail:
         smtp:
-          starttls:
-            enable: true
           auth: true
-    host: smtp.gmail.com
-    username: ${mail.server.username}
-#    jira4jr@gmail.com
-    password: ${mail.server.password}
-#    zdfzsrqvgimldzyj
-    port: 587
-  thymeleaf.check-template-location: false
+          ssl:
+            enable: true
+    thymeleaf:
+      check-template-location: false
 
   mvc.throw-exception-if-no-handler-found: true
   web.resources.add-mappings: false
