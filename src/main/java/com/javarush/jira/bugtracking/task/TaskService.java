@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -94,6 +96,8 @@ public class TaskService {
         List<Activity> activities = activityHandler.getRepository().findAllByTaskIdOrderByUpdatedDesc(id);
         fillExtraFields(taskToFull, activities);
         taskToFull.setActivityTos(activityHandler.getMapper().toToList(activities));
+        taskToFull.setDevelopmentTime(getTaskDevelopmentTime(id));
+        taskToFull.setTestingTime(getTaskTestingTime(id));
         return taskToFull;
     }
 
@@ -173,5 +177,55 @@ public class TaskService {
         if (tags.remove(tag)) {
             task.setTags(tags);
         }
+    }
+
+    public Long getTaskDevelopmentTime(long taskId) { // Sum of (ready_for_review - in_progress)
+        List<Activity> activities = activityHandler.getRepository().findAllByTaskIdOrderByUpdatedDesc(taskId);
+        Collections.reverse(activities); // ASC
+
+        long totalDevelopmentTime = 0;
+        LocalDateTime inProgressStart = null;
+
+        for (Activity activity : activities) {
+            String status = activity.getStatusCode();
+            if (status == null) continue;
+
+            if (status.equals("in_progress")) {
+                if (inProgressStart == null) {
+                    inProgressStart = activity.getUpdated();
+                }
+            } else if (status.equals("ready_for_review")) {
+                if (inProgressStart != null) {
+                    totalDevelopmentTime += ChronoUnit.SECONDS.between(inProgressStart, activity.getUpdated());
+                    inProgressStart = null; // Interval closed
+                }
+            }
+        }
+        return totalDevelopmentTime > 0 ? totalDevelopmentTime : null;
+    }
+
+    public Long getTaskTestingTime(long taskId) { // Sum of (done - ready_for_review)
+        List<Activity> activities = activityHandler.getRepository().findAllByTaskIdOrderByUpdatedDesc(taskId);
+        Collections.reverse(activities); // ASC
+
+        long totalTestingTime = 0;
+        LocalDateTime readyForReviewStart = null;
+
+        for (Activity activity : activities) {
+            String status = activity.getStatusCode();
+            if (status == null) continue;
+
+            if (status.equals("ready_for_review")) {
+                if (readyForReviewStart == null) {
+                    readyForReviewStart = activity.getUpdated();
+                }
+            } else if (status.equals("done")) {
+                if (readyForReviewStart != null) {
+                    totalTestingTime += ChronoUnit.SECONDS.between(readyForReviewStart, activity.getUpdated());
+                    readyForReviewStart = null; // Interval closed
+                }
+            }
+        }
+        return totalTestingTime > 0 ? totalTestingTime : null;
     }
 }
