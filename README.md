@@ -51,7 +51,9 @@
     - идентификаторы для OAuth регистрации/авторизации
     - настройки почты
 
-Значения этих проперти должны считываться при старте сервера из переменных окружения машины. <span style="border: 1px solid #4CAF50; background-color: #4CAF50; color: white; padding: 2px 4px; border-radius: 3px;">Easy task</span>
+Значения этих проперти должны считываться при старте сервера из переменных окружения
+машины. <span style="border: 1px solid #4CAF50; background-color: #4CAF50; color: white; padding: 2px 4px; border-radius: 3px;">
+Easy task</span>
 </details>
 
 - [x] Сделано
@@ -85,7 +87,6 @@
 
 - [x] Сделано
 
-
 <details>
     <summary><H3>Задача 8</H3></summary>
 Добавить подсчет времени сколько задача находилась в работе и тестировании. Написать 2 метода на уровне сервиса, которые параметром принимают задачу и возвращают затраченное время:
@@ -110,16 +111,47 @@
 Написать <span style="border: 1px solid black; padding: 2px 4px; border-radius: 3px;">Dockerfile</span> для основного сервера
 </details>
 
-- [ ]  В процессе
+- [x] Сделано
 
 <details>
     <summary><H3>Задача 10</H3></summary>
 Написать <span style="border: 1px solid black; padding: 2px 4px; border-radius: 3px;">docker-compose</span> файл для запуска контейнера сервера вместе с БД и nginx. Для nginx используй конфиг-файл <span style="border: 1px solid black; padding: 2px 4px; border-radius: 3px;">config/nginx.conf</span>. При необходимости файл конфига можно редактировать. <span style="border: 1px solid #f1950d; background-color: #f1940b; color: white; padding: 2px 4px; border-radius: 3px;">Hard task</span>
 
+<details>
+    <summary><H3>Запуск приложения через Docker</H3></summary>
+    <ol>
+        <li>Клонировать себе на машину проект</li>
+        <li>Убедиться, что свободны следующие порты:
+            <ul>
+                <li>80 - Nginx</li>
+                <li>8080 - Java - приложение</li>
+                <li>5050 - pgAdmin</li>
+                <li>5432 - PostgreSQL</li>
+            </ul>
+        </li>
+        <li>Выполнить команду в консоли docker-compose up</li>
+        <li>Дождаться билда приложения (1-3 минуты) и запуска всех контейнеров</li>
+        <li>Открыть приложение в браузере по адресу http://localhost или http://localhost:80</li>
+    </ol>
+    <H4>Примечания:</H4>
+    <ul>
+    <li>Доступ к приложению напрямую через порт: 8080 закрыт. Доступ возможен только через nginx порт</li>
+    <li>pgAdmin находится по адресу http://localhost:5050
+            <ul>
+                <li>login: admin@admin.com</li>
+                <li>password: root</li>
+            </ul>
+    </li>
+    <li>Во время запуска приложения произойдет популяция БД для работы. Если точнее – накатится структура и словари. Чтоб «посмотреть» как работает приложение нужно выполнить скрипт data.sql из resources/data4dev.</li>
+    <li>При изменении кода необходимо пересобрать приложение командой docker-compose down и docker-compose build</li>
+    </ul>
+
 </details>
 
-- [ ]  В процессе
 
+</details>
+
+- [x] Сделано
 
 <details>
     <summary><H3>Задача 11</H3></summary>
@@ -127,8 +159,6 @@
 </details>
 
 - [ ]  В процессе
-
-    
 
 <details>
     <summary><H3>Задача 12</H3></summary>
