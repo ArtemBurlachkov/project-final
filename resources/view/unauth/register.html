@@ -1,61 +1,61 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 
-<th:block th:replace="~{layout/main::page(title='Register',appMain=~{::appMain})}">
+<th:block th:replace="~{layout/main::page(title=#{unauth.register.title},appMain=~{::appMain})}">
     <appMain>
         <div class="row d-flex justify-content-center align-items-center">
             <div class="col-12 col-md-8 col-xl-5">
                 <div class="card shadow-2-strong" style="border-radius: 1rem;">
                     <div class="card-body p-3 p-md-5 text-center">
-                        <h3 class="mb-3">Registration</h3>
+                        <h3 class="mb-3" th:text="#{unauth.register.header}">Registration</h3>
                         <form action="/ui/register" method="post" th:object="${userTo}">
                             <div class="form-outline mb-4">
-                                <input placeholder="First name" required
+                                <input th:placeholder="#{unauth.register.first-name-placeholder}" required
                                        th:class="${#fields.hasErrors('firstName')} ? 'form-control is-invalid' : 'form-control'"
                                        th:field="*{firstName}" type="text"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('firstName')}">
-									<ul>
-										<li class="text-danger text-start"
+                                    <ul>
+                                        <li class="text-danger text-start"
                                             th:each="err : ${#fields.errors('firstName')}" th:text="${err}"/>
-									</ul>
-								</span>
+                                    </ul>
+                                </span>
                             </div>
                             <div class="form-outline mb-4">
-                                <input placeholder="Last name" th:class="${#fields.hasErrors('lastName')} ? 'form-control is-invalid' : 'form-control'"
+                                <input th:placeholder="#{unauth.register.last-name-placeholder}" th:class="${#fields.hasErrors('lastName')} ? 'form-control is-invalid' : 'form-control'"
                                        th:field="*{lastName}"
                                        type="text"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('lastName')}">
-									<ul>
-										<li class="text-danger text-start" th:each="err : ${#fields.errors('lastName')}"
+                                    <ul>
+                                        <li class="text-danger text-start" th:each="err : ${#fields.errors('lastName')}"
                                             th:text="${err}"/>
-									</ul>
-								</span>
+                                    </ul>
+                                </span>
                             </div>
                             <div class="form-outline mb-4">
-                                <input placeholder="E-mail" required
+                                <input th:placeholder="#{unauth.register.email-placeholder}" required
                                        th:class="${#fields.hasErrors('email')} ? 'form-control is-invalid' : 'form-control'"
                                        th:field="*{email}" type="text"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('email')}">
-									<ul>
-										<li class="text-danger text-start" th:each="err : ${#fields.errors('email')}"
+                                    <ul>
+                                        <li class="text-danger text-start" th:each="err : ${#fields.errors('email')}"
                                             th:text="${err}"/>
-									</ul>
-								</span>
+                                    </ul>
+                                </span>
                             </div>
                             <div class="form-outline mb-4">
-                                <input placeholder="Password" required
+                                <input th:placeholder="#{unauth.register.password-placeholder}" required
                                        th:class="${#fields.hasErrors('password')} ? 'form-control is-invalid' : 'form-control'"
                                        th:field="*{password}" type="password"/>
                                 <span class="help-block" th:if="${#fields.hasErrors('password')}">
-									<ul>
-										<li class="text-danger text-start" th:each="err : ${#fields.errors('password')}"
+                                    <ul>
+                                        <li class="text-danger text-start" th:each="err : ${#fields.errors('password')}"
                                             th:text="${err}"/>
-									</ul>
-								</span>
+                                    </ul>
+                                </span>
                             </div>
                             <div class="row">
                                 <div class="d-grid gap-2">
-                                    <button class="btn btn-success btn-lg" type="submit">Create account</button>
+                                    <button class="btn btn-success btn-lg" type="submit" th:text="#{unauth.register.create-account-button}">Create account</button>
                                 </div>
                             </div>
                         </form>
@@ -63,14 +63,14 @@
                             <div class="col-5">
                                 <hr>
                             </div>
-                            <div class="col-2">
+                            <div class="col-2" th:text="#{unauth.register.or}">
                                 OR
                             </div>
                             <div class="col-5">
                                 <hr>
                             </div>
                         </div>
-                        <p class="mt-3 mb-4">
+                        <p class="mt-3 mb-4" th:text="#{unauth.register.fast-registration}">
                             Fast registration through social networks
                         </p>
                         <a class="btn btn-secondary btn-lg me-2" href="/oauth2/authorization/google"
@@ -84,7 +84,7 @@
                             <i class="fa-brands fa-gitlab"></i>
                         </a>
                         <p class="mt-3 mb-2 mb-md-0" style="font-size:0.8em">
-                            Already have an account? <a href="/view/login">Sign in</a>
+                            <span th:text="#{unauth.register.already-have-account}">Already have an account?</span> <a href="/view/login" th:text="#{unauth.register.sign-in}">Sign in</a>
                         </p>
                     </div>
                 </div>
@@ -92,3 +92,4 @@
         </div>
     </appMain>
 </th:block>
+</html>
