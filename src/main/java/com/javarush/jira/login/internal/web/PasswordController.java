@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 @Slf4j
 @Controller
@@ -33,7 +34,7 @@ public class PasswordController {
         User user = userRepository.getExistedByEmail(email);
         ResetData resetData = new ResetData(email);
         request.getSession().setAttribute("token", resetData);
-        eventPublisher.publishEvent(new PasswordResetEvent(user, resetData.getToken()));
+        eventPublisher.publishEvent(new PasswordResetEvent(user, resetData.getToken(), RequestContextUtils.getLocale(request)));
         return "redirect:/view/login";
     }
 

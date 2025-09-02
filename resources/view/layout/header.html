@@ -7,27 +7,43 @@
         <nav class="navbar navbar-expand-lg navbar-dark" id="header">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse mt-2 mb-2 px-5">
-                    <ul class="navbar-nav m-auto">
+                    <ul class="navbar-nav me-auto"> <!-- Changed m-auto to me-auto to push other items to the right -->
                         <form class="d-flex" role="search">
-                            <input aria-label="Search" class="form-control" id="header-search" placeholder="Search"
+                            <input aria-label="Search" class="form-control" id="header-search" th:placeholder="#{header.search}"
                                    type="search">
                         </form>
                         <li class="nav-item menu-item me-3 ms-4">
                             <a class="btn btn-yellow" href="/doc" target="_blank" type="button">Swagger API</a>
                         </li>
                     </ul>
-                    <div th:if="${authUser} == null">
-                        <a class="btn btn-orange" href="/view/login" type="button">Login/Register</a>
+
+                    <!-- Language Dropdown -->
+                    <div class="nav-item dropdown mx-3"> <!-- Wrapped in nav-item for better alignment -->
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{language.choose}">
+                            Language
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" th:href="@{''(lang='en')}" th:text="#{language.en}">English</a></li>
+                            <li><a class="dropdown-item" th:href="@{''(lang='ru')}" th:text="#{language.ru}">Русский</a></li>
+                            <li><a class="dropdown-item" th:href="@{''(lang='zh')}" th:text="#{language.zh}">中文</a></li>
+                        </ul>
                     </div>
-                    <th:block th:if="${authUser} != null">
-                        <a class="btn btn-orange" href="/ui/profile" type="button"><i
-                                class="fa-solid fa-address-card"></i> Profile</a>
-                        <form action="/ui/logout" class="mx-2" method="post">
-                            <button class="btn btn-yellow btn-orange" type="submit"><i class="fa-solid fa-sign-out"></i>
-                                Logout
-                            </button>
-                        </form>
-                    </th:block>
+
+                    <!-- User/Login Section -->
+                    <div class="d-flex align-items-center"> <!-- Flex container for login/profile -->
+                        <div th:if="${authUser} == null">
+                            <a class="btn btn-orange" href="/view/login" type="button" th:text="#{login.button}">Login/Register</a>
+                        </div>
+                        <th:block th:if="${authUser} != null">
+                            <a class="btn btn-orange" href="/ui/profile" type="button"><i
+                                    class="fa-solid fa-address-card"></i> <span th:text="#{header.profile}">Profile</span></a>
+                            <form action="/ui/logout" class="mx-2 d-inline" method="post">
+                                <button class="btn btn-yellow btn-orange" type="submit"><i class="fa-solid fa-sign-out"></i>
+                                    <span th:text="#{header.logout}">Logout</span>
+                                </button>
+                            </form>
+                        </th:block>
+                    </div>
                 </div>
             </div>
         </nav>

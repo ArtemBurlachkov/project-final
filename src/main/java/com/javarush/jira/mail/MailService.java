@@ -50,20 +50,20 @@ public class MailService {
         return OK.equals(result);
     }
 
-    public String sendToUserWithParams(@NonNull String template, @NonNull User user, @NonNull Map<String, Object> params) {
+    public String sendToUserWithParams(@NonNull String template, @NonNull User user, @NonNull Map<String, Object> params, Locale locale) {
         String email = Objects.requireNonNull(user.getEmail());
         Map<String, Object> extParams = Util.mergeMap(params, Map.of("user", user));
-        return send(appConfig.isProd() ? email : appProperties.getTestMail(), user.getFirstName(), template, extParams);
+        return send(appConfig.isProd() ? email : appProperties.getTestMail(), user.getFirstName(), template, extParams, locale);
     }
 
-    public String send(String toEmail, String toName, String template, Map<String, Object> params) {
+    public String send(String toEmail, String toName, String template, Map<String, Object> params, Locale locale) {
         log.debug("Send email to {}, {} with template {}", toEmail, toName, template);
         String result = OK;
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
             message.setFrom(email, "JiraRush");
-            String content = getContent(template, params);
+            String content = getContent(template, params, locale);
             message.setText(content, true);
             message.setSubject(Util.getTitle(content));  // TODO calculate title for group emailing only once
             message.setTo(new InternetAddress(toEmail, toName, "UTF-8"));
@@ -72,18 +72,18 @@ public class MailService {
             }
         } catch (Exception e) {
             result = e.getMessage();
-            log.error("Sending to {} failed: \n{}", toEmail, result);
+            log.error("Sending to {} failed: \\n{}", toEmail, result);
             mailCaseRepository.save(new MailCase(toEmail, toName, template, result));
         }
         return result;
     }
 
-    private String getContent(String template, Map<String, Object> params) {
-        Context context = new Context(LOCALE_RU, params);
+    private String getContent(String template, Map<String, Object> params, Locale locale) {
+        Context context = new Context(locale, params);
         return templateEngine.process(template, context);
     }
 
-    public synchronized GroupResult sendToGroup(@NonNull String template, @NonNull Set<User> users, Map<String, Object> params) {
+    public synchronized GroupResult sendToGroup(@NonNull String template, @NonNull Set<User> users, Map<String, Object> params, Locale locale) {
         if (users.isEmpty()) {
             return new GroupResult(0, Collections.emptyList(), null);
         }
@@ -91,7 +91,7 @@ public class MailService {
         Map<Future<String>, String> resultMap = new HashMap<>();
         users.forEach(
                 user -> {
-                    Future<String> future = completionService.submit(() -> sendToUserWithParams(template, user, params));
+                    Future<String> future = completionService.submit(() -> sendToUserWithParams(template, user, params, locale));
                     resultMap.put(future, user.getEmail());
                 }
         );
@@ -118,8 +118,8 @@ public class MailService {
     }
 
     @Async("mailExecutor")
-    public void sendToUserAsync(@NonNull String template, @NonNull User user, Map<String, Object> params) {
-        sendToUserWithParams(template, user, params);
+    public void sendToUserAsync(@NonNull String template, @NonNull User user, Map<String, Object> params, Locale locale) {
+        sendToUserWithParams(template, user, params, locale);
     }
 
     private void cancelAll(Map<Future<String>, String> resultMap) {

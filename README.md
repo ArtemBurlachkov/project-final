@@ -158,7 +158,7 @@ Easy task</span>
     Добавить локализацию минимум на двух языках для шаблонов писем (mails) и стартовой страницы <span style="border: 1px solid black; padding: 2px 4px; border-radius: 3px;">index.html</span>.
 </details>
 
-- [ ]  В процессе
+- [x] Сделано
 
 <details>
     <summary><H3>Задача 12</H3></summary>
