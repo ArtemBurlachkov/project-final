@@ -28,7 +28,7 @@ public class UserTo extends BaseTo implements HasIdAndEmail, Serializable {
     private String email;
 
     @NotBlank(groups = {View.OnCreate.class})
-    @Size(min = 5, max = 32, groups = {View.OnCreate.class})
+    @Size(min = 5, max = 32)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonView(View.OnCreate.class)
     @Schema(accessMode = Schema.AccessMode.WRITE_ONLY) // https://stackoverflow.com/a/28025008/548473
