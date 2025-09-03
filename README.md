@@ -33,14 +33,14 @@
     Разобраться со структурой проекта (onboarding).
 </details>
 
-- [x] Сделано
+- [x] Выполнено
 
 <details>
     <summary><H3>Задача 2</H3></summary>
     Удалить социальные сети: vk, yandex. <span style="border: 1px solid #4CAF50; background-color: #4CAF50; color: white; padding: 2px 4px; border-radius: 3px;">Easy task</span>
 </details>
 
-- [x] Сделано
+- [x] Выполнено
 
 <details>
     <summary><H3>Задача 3</H3></summary>
@@ -56,28 +56,28 @@
 Easy task</span>
 </details>
 
-- [x] Сделано
+- [x] Выполнено
 
 <details>
     <summary><H3>Задача 4</H3></summary>
     Переделать тесты так, чтоб во время тестов использовалась <strong>in memory БД (H2)</strong>, а не PostgreSQL. Для этого нужно определить 2 бина, и выборка какой из них использовать должно определяться активным профилем Spring. H2 не поддерживает все фичи, которые есть у PostgreSQL, поэтому тебе прийдется немного упростить скрипты с тестовыми данными.
 </details>
 
-- [ ]  В процессе
+- [x] Выполнено
 
 <details>
     <summary><H3>Задача 5</H3></summary>
     Написать тесты для всех публичных методов контроллера <span style="border: 1px solid black; padding: 2px 4px; border-radius: 3px;">ProfileRestController</span>. Хоть методов только 2, но тестовых методов должно быть больше, т.к. нужно проверить success and unsuccess path.
 </details>
 
-- [x] Сделано
+- [x] Выполнено
 
 <details>
     <summary><H3>Задача 6</H3></summary>
     Сделать рефакторинг метода <span style="border: 1px solid black; padding: 2px 4px; border-radius: 3px;">com.javarush.jira.bugtracking.attachment.FileUtil#upload</span> чтоб он использовал современный подход для работы с файловой системмой. <span style="border: 1px solid #4CAF50; background-color: #4CAF50; color: white; padding: 2px 4px; border-radius: 3px;">Easy task</span>
 </details>
 
-- [x] Сделано
+- [x] Выполнено
 
 <details>
     <summary><H3>Задача 7</H3></summary>
@@ -85,7 +85,7 @@ Easy task</span>
 
 </details>
 
-- [x] Сделано
+- [x] Выполнено
 
 <details>
     <summary><H3>Задача 8</H3></summary>
@@ -104,14 +104,14 @@ Easy task</span>
 </ul>
 </details>
 
-- [x] Сделано
+- [x] Выполнено
 
 <details>
     <summary><H3>Задача 9</H3></summary>
 Написать <span style="border: 1px solid black; padding: 2px 4px; border-radius: 3px;">Dockerfile</span> для основного сервера
 </details>
 
-- [x] Сделано
+- [x] Выполнено
 
 <details>
     <summary><H3>Задача 10</H3></summary>
@@ -151,14 +151,14 @@ Easy task</span>
 
 </details>
 
-- [x] Сделано
+- [x] Выполнено
 
 <details>
     <summary><H3>Задача 11</H3></summary>
     Добавить локализацию минимум на двух языках для шаблонов писем (mails) и стартовой страницы <span style="border: 1px solid black; padding: 2px 4px; border-radius: 3px;">index.html</span>.
 </details>
 
-- [x] Сделано
+- [x] Выполнено
 
 <details>
     <summary><H3>Задача 12</H3></summary>
